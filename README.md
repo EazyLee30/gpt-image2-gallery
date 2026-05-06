@@ -1,24 +1,57 @@
 # GPT Image 2 Prompt Gallery
 
-A curated gallery of 2700+ prompts for OpenAI's GPT Image 2 model.
+> 2700+ curated prompts for OpenAI's GPT Image 2 model — search, filter, copy.
+
+**[Live Site](https://eazylee.xyz/gpt-image2-gallery/)**
+
+## What is this
+
+A brutalist-style prompt gallery for GPT Image 2. Monospace everything, sharp edges, no fluff. Browse thousands of hand-curated prompts, filter by category, search in English or Chinese, copy with one click.
 
 ## Features
 
-- 2.5D isometric illustration design
-- Real-time search (English & Chinese)
-- Category filtering with counts
-- Prompt preview with one-click copy
-- Auto-synced daily from upstream
+- **2700+ prompts** — curated from [awesome-gptimage2-prompts](https://github.com/gpt-image2/awesome-gptimage2-prompts)
+- **Instant search** — real-time filtering across title, summary, and tags
+- **Category filter** — pill-based navigation with counts
+- **One-click copy** — grab any prompt straight to clipboard
+- **Preview images** — every prompt comes with its sample output
+- **Auto-synced** — GitHub Action pulls fresh prompts daily at 04:23 UTC
+- **Zero dependencies** — pure HTML + CSS + vanilla JS, no build step
+
+## Design
+
+Brutalist aesthetic. Monospace type, `0px` radius, `none` shadows, `2px` solid borders. Inspired by [slock.ai](https://slock.ai). Functional over decorative.
+
+```
+--bg:       #F5F0E8   --text:     #1A1A1A
+--bg-card:  #FFFDF7   --accent:   #D4503A
+--border:   #C8C0B4   --font:     Menlo, Consolas, monospace
+```
+
+## Architecture
+
+```
+index.html          ← single page, semantic markup
+style.css           ← brutalist tokens + responsive grid
+app.js              ← virtual scroll, search, filter, modal
+prompts.json        ← 2744 templates with preview images
+scripts/
+  sync-prompts.py   ← upstream fetch + format conversion
+.github/workflows/
+  sync.yml          ← daily cron job
+```
 
 ## Data Source
 
-Prompts sourced from [gpt-image2/awesome-gptimage2-prompts](https://github.com/gpt-image2/awesome-gptimage2-prompts) (CC-BY-4.0).
+Prompt content sourced from [gpt-image2/awesome-gptimage2-prompts](https://github.com/gpt-image2/awesome-gptimage2-prompts), licensed under CC-BY-4.0.
 
-## Auto Sync
+## Local Development
 
-A GitHub Action runs daily at 04:23 UTC, fetching the latest prompts from upstream and committing changes automatically.
-
-Manual trigger: **Actions** tab → **Sync Prompts** → **Run workflow**.
+```bash
+# any static server works
+python3 -m http.server 8000
+# open http://localhost:8000
+```
 
 ## License
 
