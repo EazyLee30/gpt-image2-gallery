@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Browse 2700+ curated prompts for OpenAI's GPT Image 2 model. Brutalist prompt gallery with instant search and copy.">
+  <title>GPT Image 2 Prompt Gallery</title>
+
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='2' y='2' width='28' height='28' fill='%23D4503A' stroke='%231A1A1A' stroke-width='2'/%3E%3Ctext x='16' y='22' text-anchor='middle' fill='%23FFFDF7' font-family='monospace' font-size='16' font-weight='bold'%3E2%3C/text%3E%3C/svg%3E">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ===================== HERO ===================== -->
+  <header class="hero" id="hero">
+    <div class="hero-inner">
+      <h1 class="hero-title">GPT Image 2 <span>Prompt Gallery</span></h1>
+      <p class="hero-sub">2700+ curated prompts for OpenAI's next-gen image model. Search, filter, copy.</p>
+
+      <div class="stats">
+        <div class="stat">
+          <span class="stat-num" id="stat-total">---</span>
+          <span class="stat-label">Prompts</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num" id="stat-categories">---</span>
+          <span class="stat-label">Categories</span>
+        </div>
+      </div>
+
+      <div class="controls">
+        <div class="search-wrap">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <input type="search" id="search-input" class="search-input" placeholder="search prompts..." autocomplete="off" aria-label="Search prompts">
+        </div>
+        <select id="category-filter" class="filter-select" aria-label="Filter by category">
+          <option value="">ALL</option>
+        </select>
+      </div>
+
+      <div class="pills" id="pills"></div>
+      <div class="result-count" id="result-count"></div>
+    </div>
+  </header>
+
+  <!-- ===================== GALLERY ===================== -->
+  <main class="gallery-section" id="gallery-section">
+    <div class="gallery" id="gallery" role="list" aria-label="Prompt gallery"></div>
+    <div id="sentinel" class="sentinel" aria-hidden="true">
+      <div class="loader-dots">
+        <div class="loader-dot"></div>
+        <div class="loader-dot"></div>
+        <div class="loader-dot"></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer class="site-footer">
+    <p>
+      Curated gallery for <a href="https://openai.com" target="_blank" rel="noopener">OpenAI GPT Image 2</a> prompts.
+      Data from <a href="https://github.com/gpt-image2/awesome-gptimage2-prompts" target="_blank" rel="noopener">awesome-gptimage2-prompts</a>.
+      Auto-synced daily.
+    </p>
+  </footer>
+
+  <!-- ===================== MODAL ===================== -->
+  <div class="modal-backdrop" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" hidden>
+    <div class="modal-container">
+      <button class="modal-close" id="modal-close" aria-label="Close">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+
+      <div class="modal-preview" id="modal-preview">
+        <img id="modal-image" src="" alt="Preview" loading="lazy">
+        <button class="btn-expand" id="btn-expand" aria-label="Fullscreen">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+          expand
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="modal-header">
+          <h2 class="modal-title" id="modal-title"></h2>
+          <span class="modal-category" id="modal-category"></span>
+        </div>
+        <p class="modal-summary" id="modal-summary"></p>
+        <div class="modal-tags" id="modal-tags"></div>
+
+        <div class="prompt-block">
+          <div class="prompt-block-header">
+            <span class="prompt-label">Prompt</span>
+            <button class="btn-copy" id="btn-copy" aria-label="Copy">
+              <svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="0"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              <svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><polyline points="20 6 9 17 4 12"/></svg>
+              <span class="copy-text">copy</span>
+            </button>
+          </div>
+          <pre class="prompt-text" id="modal-prompt"></pre>
+        </div>
+
+        <div class="modal-foot" id="modal-foot"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== LIGHTBOX ===================== -->
+  <div class="lightbox" id="lightbox" hidden>
+    <button class="lightbox-close" id="lightbox-close" aria-label="Close">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <img class="lightbox-img" id="lightbox-img" src="" alt="Fullscreen">
+  </div>
+
+  <script src="app.js" defer></script>
+</body>
+</html>

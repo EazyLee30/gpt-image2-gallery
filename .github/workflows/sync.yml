@@ -1,0 +1,36 @@
+name: Sync Prompts
+
+on:
+  schedule:
+    - cron: '23 4 * * *'  # Daily at 04:23 UTC
+  workflow_dispatch:       # Manual trigger
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Sync prompts from upstream
+        run: python scripts/sync-prompts.py
+
+      - name: Check for changes
+        id: diff
+        run: |
+          git diff --quiet prompts.json && echo "changed=false" >> "$GITHUB_OUTPUT" || echo "changed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Commit and push
+        if: steps.diff.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add prompts.json
+          git commit -m "chore: sync prompts ($(date -u +%Y-%m-%d))"
+          git push
